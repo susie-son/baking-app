@@ -4,4 +4,6 @@
     <string name="item_recipe_image_view_content_description">Recipe image</string>
     <string name="item_recipe_serving_image_view_content_description">An image of a serving platter</string>
     <string name="action_refresh">Refresh</string>
+    <string name="ingredients_label">Ingredients</string>
+    <string name="a_bullet_point_image">A bullet point image</string>
 </resources>

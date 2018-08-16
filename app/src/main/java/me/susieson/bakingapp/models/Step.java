@@ -18,6 +18,7 @@ public class Step implements Parcelable {
             return new Step[size];
         }
     };
+
     @SerializedName("id")
     private int id;
     @SerializedName("shortDescription")

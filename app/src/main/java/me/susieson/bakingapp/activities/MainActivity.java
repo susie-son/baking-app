@@ -16,6 +16,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Timber.d("Executing onCreate");
+
         if (savedInstanceState == null) {
             Timber.plant(new Timber.DebugTree());
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -24,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.fragment_recipe_main_container, mRecipeMainFragment)
                     .commit();
         }
-        Timber.d("Executing onCreate");
     }
 
     @Override

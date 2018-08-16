@@ -1,6 +1,7 @@
 package me.susieson.bakingapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.susieson.bakingapp.R;
+import me.susieson.bakingapp.activities.DetailActivity;
 import me.susieson.bakingapp.adapters.RecipeMainAdapter;
 import me.susieson.bakingapp.interfaces.OnItemClickListener;
 import me.susieson.bakingapp.models.Recipe;
@@ -34,6 +36,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 public class RecipeMainFragment extends Fragment implements OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+
+    public static final String FRAGMENT_SELECTED_RECIPE = "fragment-selected-recipe";
 
     private static final String RECIPE_LIST_EXTRA = "recipe-list";
     private static final String BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
@@ -86,12 +90,19 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        Timber.d("Saving instance state");
         outState.putParcelableArrayList(RECIPE_LIST_EXTRA, (ArrayList<Recipe>) mRecipeList);
     }
 
     @Override
     public void onItemClick(int position) {
-        Timber.i("Item %d clicked!", position);
+        Timber.d("Item %d clicked, opening %s recipe", position, mRecipeList.get(position).getName());
+        Intent intent = new Intent(mContext, DetailActivity.class);
+        Recipe selectedRecipe = mRecipeList.get(position);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(FRAGMENT_SELECTED_RECIPE, selectedRecipe);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

@@ -2,6 +2,7 @@ package me.susieson.bakingapp.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -80,7 +81,7 @@ public class RecipeMainAdapter extends RecyclerView.Adapter<RecipeMainAdapter.Vi
             if (imageUrl != null && !TextUtils.isEmpty(imageUrl)) {
                 Picasso.with(mContext).load(imageUrl).error(R.drawable.ic_cutlery).into(mRecipeImageView);
             } else {
-                mRecipeImageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_cutlery));
+                mRecipeImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_cutlery));
             }
 
             if (name != null && !TextUtils.isEmpty(name)) {

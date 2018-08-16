@@ -20,6 +20,7 @@ public class Recipe implements Parcelable {
             return new Recipe[size];
         }
     };
+
     @SerializedName("id")
     private int id;
     @SerializedName("name")
@@ -36,6 +37,8 @@ public class Recipe implements Parcelable {
     private Recipe(Parcel in) {
         id = in.readInt();
         name = in.readString();
+        ingredients = in.createTypedArrayList(Ingredient.CREATOR);
+        steps = in.createTypedArrayList(Step.CREATOR);
         servings = in.readInt();
         image = in.readString();
     }
@@ -44,6 +47,8 @@ public class Recipe implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(name);
+        dest.writeTypedList(ingredients);
+        dest.writeTypedList(steps);
         dest.writeInt(servings);
         dest.writeString(image);
     }

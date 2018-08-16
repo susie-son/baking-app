@@ -18,6 +18,7 @@ public class Ingredient implements Parcelable {
             return new Ingredient[size];
         }
     };
+
     @SerializedName("quantity")
     private double quantity;
     @SerializedName("measure")
