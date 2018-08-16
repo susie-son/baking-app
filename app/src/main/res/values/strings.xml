@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Baking App</string>
+    <string name="recipe_main_loading_error">Cannot load recipes. Please check your internet connection and try again.</string>
+    <string name="item_recipe_image_view_content_description">Recipe image</string>
+    <string name="item_recipe_serving_image_view_content_description">An image of a serving platter</string>
+    <string name="action_refresh">Refresh</string>
 </resources>
