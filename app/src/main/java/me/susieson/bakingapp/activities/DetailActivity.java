@@ -2,6 +2,7 @@ package me.susieson.bakingapp.activities;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
@@ -25,6 +26,14 @@ public class DetailActivity extends AppCompatActivity {
         Bundle receiveBundle = getIntent().getExtras();
         if (receiveBundle != null && savedInstanceState == null && receiveBundle.containsKey(RecipeMainFragment.FRAGMENT_SELECTED_RECIPE)) {
             Recipe selectedRecipe = receiveBundle.getParcelable(RecipeMainFragment.FRAGMENT_SELECTED_RECIPE);
+
+            if (selectedRecipe != null) {
+                String recipeName = selectedRecipe.getName();
+                ActionBar actionBar = getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setTitle(recipeName);
+                }
+            }
 
             Bundle sendBundle = new Bundle();
             sendBundle.putParcelable(ACTIVITY_SELECTED_RECIPE, selectedRecipe);

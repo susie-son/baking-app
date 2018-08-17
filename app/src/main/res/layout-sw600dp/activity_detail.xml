@@ -18,4 +18,10 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.3" />
 
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="#DEDEDE"
+        app:layout_constraintStart_toStartOf="@id/recipe_detail_guideline" />
+
 </android.support.constraint.ConstraintLayout>
