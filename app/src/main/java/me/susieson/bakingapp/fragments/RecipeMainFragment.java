@@ -16,6 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.evernote.android.state.State;
+import com.evernote.android.state.StateSaver;
+import com.evernote.android.state.bundlers.BundlerListParcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +43,6 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
 
     public static final String FRAGMENT_SELECTED_RECIPE = "fragment-selected-recipe";
 
-    private static final String RECIPE_LIST_EXTRA = "recipe-list";
     private static final String BASE_URL = "https://d17h27t6h515a5.cloudfront.net/";
 
     @BindView(R.id.fragment_recipe_main)
@@ -55,7 +58,8 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
 
     private Context mContext;
 
-    private List<Recipe> mRecipeList = new ArrayList<>();
+    @State(BundlerListParcelable.class)
+    List<Recipe> mRecipeList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +74,8 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container,
                              @Nullable final Bundle savedInstanceState) {
         Timber.d("Executing onCreateView");
+        StateSaver.restoreInstanceState(this, savedInstanceState);
+
         View rootView = inflater.inflate(R.layout.fragment_recipe_main, container, false);
         ButterKnife.bind(this, rootView);
 
@@ -77,10 +83,7 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
         setupRefreshLayout();
 
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(RECIPE_LIST_EXTRA)) {
-                mRecipeList = savedInstanceState.getParcelableArrayList(RECIPE_LIST_EXTRA);
-                mRecipeAdapter.updateData(mRecipeList);
-            }
+            mRecipeAdapter.updateData(mRecipeList);
         } else {
             getRecipeList();
         }
@@ -91,7 +94,7 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         Timber.d("Saving instance state");
-        outState.putParcelableArrayList(RECIPE_LIST_EXTRA, (ArrayList<Recipe>) mRecipeList);
+        StateSaver.saveInstanceState(this, outState);
     }
 
     @Override

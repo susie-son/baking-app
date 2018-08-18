@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
-    <FrameLayout
+    <fragment
         android:id="@+id/fragment_recipe_main_container"
+        android:name="me.susieson.bakingapp.fragments.RecipeMainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

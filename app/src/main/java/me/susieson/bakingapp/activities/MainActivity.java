@@ -20,11 +20,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             Timber.plant(new Timber.DebugTree());
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            RecipeMainFragment mRecipeMainFragment = new RecipeMainFragment();
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_recipe_main_container, mRecipeMainFragment)
-                    .commit();
         }
     }
 
