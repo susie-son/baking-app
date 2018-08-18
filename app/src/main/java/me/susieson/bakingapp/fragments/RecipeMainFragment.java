@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.evernote.android.state.State;
@@ -61,6 +62,9 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
     @State(BundlerListParcelable.class)
     List<Recipe> mRecipeList = new ArrayList<>();
 
+    @State
+    int scrollPosition = 0;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Timber.d("Executing onCreate");
@@ -78,6 +82,15 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
 
         View rootView = inflater.inflate(R.layout.fragment_recipe_main, container, false);
         ButterKnife.bind(this, rootView);
+
+        mRecyclerView.setScrollY(scrollPosition);
+
+        mRecyclerView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                scrollPosition = mRecyclerView.getScrollY();
+            }
+        });
 
         setupRecyclerView();
         setupRefreshLayout();

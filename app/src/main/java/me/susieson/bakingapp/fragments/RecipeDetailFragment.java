@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +13,11 @@ import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+
+import com.evernote.android.state.State;
+import com.evernote.android.state.StateSaver;
+import com.evernote.android.state.bundlers.BundlerListParcelable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,20 +36,27 @@ import timber.log.Timber;
 
 public class RecipeDetailFragment extends Fragment implements OnItemClickListener {
 
-    private static final String INGREDIENT_LIST_EXTRA = "ingredient-list";
-    private static final String STEP_LIST_EXTRA = "step-list";
-
     @BindView(R.id.recipe_detail_ingredients_recycler_view)
     RecyclerView mIngredientsRecyclerView;
 
     @BindView(R.id.recipe_detail_steps_recycler_view)
     RecyclerView mStepsRecyclerView;
 
+    @BindView(R.id.recipe_detail_nested_scroll_view)
+    NestedScrollView mNestedScrollView;
+
     private RecipeIngredientAdapter mIngredientAdapter;
     private RecipeStepAdapter mStepAdapter;
     private Context mContext;
-    private List<Ingredient> mIngredientList = new ArrayList<>();
-    private List<Step> mStepList = new ArrayList<>();
+
+    @State(BundlerListParcelable.class)
+    List<Ingredient> mIngredientList = new ArrayList<>();
+
+    @State(BundlerListParcelable.class)
+    List<Step> mStepList = new ArrayList<>();
+
+    @State
+    int scrollViewPosition = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,18 +71,21 @@ public class RecipeDetailFragment extends Fragment implements OnItemClickListene
         Timber.d("Executing onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
         ButterKnife.bind(this, rootView);
+        StateSaver.restoreInstanceState(this, savedInstanceState);
 
         setupIngredientRecyclerView();
         setupStepRecyclerView();
 
-        if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey(INGREDIENT_LIST_EXTRA)) {
-                mIngredientList = savedInstanceState.getParcelableArrayList(INGREDIENT_LIST_EXTRA);
+        mNestedScrollView.setScrollY(scrollViewPosition);
+
+        mNestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                scrollViewPosition = mNestedScrollView.getScrollY();
             }
-            if (savedInstanceState.containsKey(STEP_LIST_EXTRA)) {
-                mStepList = savedInstanceState.getParcelableArrayList(STEP_LIST_EXTRA);
-            }
-        } else {
+        });
+
+        if (savedInstanceState == null) {
             Bundle receiveBundle = getArguments();
             if (receiveBundle != null && receiveBundle.containsKey(DetailActivity.ACTIVITY_SELECTED_RECIPE)) {
                 Recipe selectedRecipe = receiveBundle.getParcelable(DetailActivity.ACTIVITY_SELECTED_RECIPE);
@@ -88,8 +104,7 @@ public class RecipeDetailFragment extends Fragment implements OnItemClickListene
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         Timber.d("Saving instance state");
-        outState.putParcelableArrayList(INGREDIENT_LIST_EXTRA, (ArrayList<Ingredient>) mIngredientList);
-        outState.putParcelableArrayList(STEP_LIST_EXTRA, (ArrayList<Step>) mStepList);
+        StateSaver.saveInstanceState(this, outState);
     }
 
     @Override
