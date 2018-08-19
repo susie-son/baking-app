@@ -17,7 +17,9 @@ import android.view.ViewTreeObserver;
 
 import com.evernote.android.state.State;
 import com.evernote.android.state.StateSaver;
-import com.evernote.android.state.bundlers.BundlerListParcelable;
+import com.hannesdorfmann.fragmentargs.FragmentArgs;
+import com.hannesdorfmann.fragmentargs.annotation.Arg;
+import com.hannesdorfmann.fragmentargs.annotation.FragmentWithArgs;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +27,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.susieson.bakingapp.R;
-import me.susieson.bakingapp.activities.DetailActivity;
 import me.susieson.bakingapp.adapters.RecipeIngredientAdapter;
 import me.susieson.bakingapp.adapters.RecipeStepAdapter;
 import me.susieson.bakingapp.interfaces.OnItemClickListener;
@@ -34,7 +35,11 @@ import me.susieson.bakingapp.models.Recipe;
 import me.susieson.bakingapp.models.Step;
 import timber.log.Timber;
 
+@FragmentWithArgs
 public class RecipeDetailFragment extends Fragment implements OnItemClickListener {
+
+    @BindView(R.id.recipe_detail_nested_scroll_view)
+    NestedScrollView mScrollView;
 
     @BindView(R.id.recipe_detail_ingredients_recycler_view)
     RecyclerView mIngredientsRecyclerView;
@@ -42,28 +47,28 @@ public class RecipeDetailFragment extends Fragment implements OnItemClickListene
     @BindView(R.id.recipe_detail_steps_recycler_view)
     RecyclerView mStepsRecyclerView;
 
-    @BindView(R.id.recipe_detail_nested_scroll_view)
-    NestedScrollView mNestedScrollView;
+    @Arg
+    @State
+    Recipe selectedRecipe;
+
+    @State
+    int scrollPosition;
 
     private RecipeIngredientAdapter mIngredientAdapter;
     private RecipeStepAdapter mStepAdapter;
     private Context mContext;
-
-    @State(BundlerListParcelable.class)
-    List<Ingredient> mIngredientList = new ArrayList<>();
-
-    @State(BundlerListParcelable.class)
-    List<Step> mStepList = new ArrayList<>();
-
-    @State
-    int scrollViewPosition = 0;
+    private List<Ingredient> mIngredientList = new ArrayList<>();
+    private List<Step> mStepList = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Timber.d("Executing onCreate");
         super.onCreate(savedInstanceState);
         mContext = getContext();
+        StateSaver.restoreInstanceState(this, savedInstanceState);
+        FragmentArgs.inject(this);
     }
+
 
     @Nullable
     @Override
@@ -71,39 +76,37 @@ public class RecipeDetailFragment extends Fragment implements OnItemClickListene
         Timber.d("Executing onCreateView");
         View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
         ButterKnife.bind(this, rootView);
-        StateSaver.restoreInstanceState(this, savedInstanceState);
 
         setupIngredientRecyclerView();
         setupStepRecyclerView();
 
-        mNestedScrollView.setScrollY(scrollViewPosition);
-
-        mNestedScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
-            @Override
-            public void onScrollChanged() {
-                scrollViewPosition = mNestedScrollView.getScrollY();
-            }
-        });
-
-        if (savedInstanceState == null) {
-            Bundle receiveBundle = getArguments();
-            if (receiveBundle != null && receiveBundle.containsKey(DetailActivity.ACTIVITY_SELECTED_RECIPE)) {
-                Recipe selectedRecipe = receiveBundle.getParcelable(DetailActivity.ACTIVITY_SELECTED_RECIPE);
-                if (selectedRecipe != null) {
-                    mIngredientList = selectedRecipe.getIngredients();
-                    mStepList = selectedRecipe.getSteps();
-                }
-            }
+        if (selectedRecipe != null) {
+            mIngredientList = selectedRecipe.getIngredients();
+            mStepList = selectedRecipe.getSteps();
         }
         mIngredientAdapter.updateData(mIngredientList);
         mStepAdapter.updateData(mStepList);
+
+        mScrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                mScrollView.scrollTo(0, scrollPosition);
+            }
+        });
+
+        mScrollView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                scrollPosition = mScrollView.getScrollY();
+            }
+        });
 
         return rootView;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        Timber.d("Saving instance state");
+        Timber.d("Executing onSaveInstanceState");
         StateSaver.saveInstanceState(this, outState);
     }
 
@@ -120,6 +123,7 @@ public class RecipeDetailFragment extends Fragment implements OnItemClickListene
         mIngredientAdapter = new RecipeIngredientAdapter(mIngredientList);
         mIngredientsRecyclerView.setAdapter(mIngredientAdapter);
         mIngredientsRecyclerView.setNestedScrollingEnabled(false);
+        mIngredientsRecyclerView.setFocusable(false);
     }
 
     private void setupStepRecyclerView() {
@@ -133,5 +137,6 @@ public class RecipeDetailFragment extends Fragment implements OnItemClickListene
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL);
         mStepsRecyclerView.addItemDecoration(dividerItemDecoration);
+        mStepsRecyclerView.setFocusable(false);
     }
 }

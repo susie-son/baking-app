@@ -1,12 +1,10 @@
 package me.susieson.bakingapp.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 
 import me.susieson.bakingapp.R;
-import me.susieson.bakingapp.fragments.RecipeMainFragment;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {

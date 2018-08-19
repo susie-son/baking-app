@@ -1,0 +1,38 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:28.0.0-rc01'
+
+    // Dart
+    implementation 'com.f2prateek.dart:dart:3.0.1'
+    implementation 'com.f2prateek.dart:dart-annotations:3.0.1'
+    annotationProcessor 'com.f2prateek.dart:dart-processor:3.0.1'
+
+    // Henson
+    implementation 'com.f2prateek.dart:henson:3.0.1'
+    annotationProcessor 'com.f2prateek.dart:henson-processor:3.0.1'
+
+    // Gson
+    implementation 'com.google.code.gson:gson:2.8.5'
+}

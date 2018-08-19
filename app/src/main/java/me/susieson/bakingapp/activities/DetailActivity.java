@@ -1,20 +1,22 @@
 package me.susieson.bakingapp.activities;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import dart.Dart;
+import dart.DartModel;
 import me.susieson.bakingapp.R;
 import me.susieson.bakingapp.fragments.RecipeDetailFragment;
-import me.susieson.bakingapp.fragments.RecipeMainFragment;
+import me.susieson.bakingapp.fragments.RecipeDetailFragmentBuilder;
 import me.susieson.bakingapp.models.Recipe;
 import timber.log.Timber;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public static final String ACTIVITY_SELECTED_RECIPE = "activity-selected-recipe";
+    @DartModel
+    DetailActivityNavigationModel detailActivityNavigationModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,27 +25,24 @@ public class DetailActivity extends AppCompatActivity {
 
         Timber.d("Executing onCreate");
 
-        Bundle receiveBundle = getIntent().getExtras();
-        if (receiveBundle != null && savedInstanceState == null && receiveBundle.containsKey(RecipeMainFragment.FRAGMENT_SELECTED_RECIPE)) {
-            Recipe selectedRecipe = receiveBundle.getParcelable(RecipeMainFragment.FRAGMENT_SELECTED_RECIPE);
+        Dart.bind(this);
 
-            if (selectedRecipe != null) {
-                String recipeName = selectedRecipe.getName();
-                ActionBar actionBar = getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setTitle(recipeName);
-                }
+        Recipe selectedRecipe = detailActivityNavigationModel.selectedRecipe;
+
+        if (selectedRecipe != null) {
+            String recipeName = selectedRecipe.getName();
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setTitle(recipeName);
             }
+            RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragmentBuilder(selectedRecipe)
+                    .build();
 
-            Bundle sendBundle = new Bundle();
-            sendBundle.putParcelable(ACTIVITY_SELECTED_RECIPE, selectedRecipe);
-
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            RecipeDetailFragment recipeDetailFragment = new RecipeDetailFragment();
-            recipeDetailFragment.setArguments(sendBundle);
-            fragmentManager.beginTransaction()
-                    .add(R.id.fragment_recipe_detail_container, recipeDetailFragment)
-                    .commit();
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_recipe_detail_container, recipeDetailFragment)
+                        .commit();
+            }
         }
     }
 

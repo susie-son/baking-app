@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'dart.henson-plugin'
 
 android {
     compileSdkVersion 28
@@ -22,6 +23,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0-rc01'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
+    // app-navigation
+    implementation project(':app-navigation')
 
     // RecyclerView
     implementation 'com.android.support:recyclerview-v7:28.0.0-rc01'
@@ -50,7 +54,24 @@ dependencies {
     implementation 'com.evernote:android-state:1.3.1'
     annotationProcessor 'com.evernote:android-state-processor:1.3.1'
 
+    // Dart
+    implementation 'com.f2prateek.dart:dart:3.0.1'
+    implementation 'com.f2prateek.dart:dart-annotations:3.0.1'
+    annotationProcessor 'com.f2prateek.dart:dart-processor:3.0.1'
+
+    // Henson
+    implementation 'com.f2prateek.dart:henson:3.0.1'
+    annotationProcessor 'com.f2prateek.dart:henson-processor:3.0.1'
+
+    // Fragment Args
+    implementation 'com.hannesdorfmann.fragmentargs:annotation:4.0.0-RC1'
+    annotationProcessor 'com.hannesdorfmann.fragmentargs:processor:4.0.0-RC1'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+henson {
+    navigatorPackageName = "me.susieson.bakingapp_navigation"
 }
