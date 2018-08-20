@@ -7,4 +7,5 @@
     <string name="action_refresh">Refresh</string>
     <string name="ingredients_label">Ingredients</string>
     <string name="a_bullet_point_image">A bullet point image</string>
+    <string name="recipe_step_player_view_placeholder_image_view_content_description">A image of a chef</string>
 </resources>

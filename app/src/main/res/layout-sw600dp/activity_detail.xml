@@ -16,12 +16,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_begin="250dp" />
 
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="#DEDEDE"
+        app:layout_constraintStart_toStartOf="@id/recipe_detail_guideline" />
+
+    <FrameLayout
+        android:id="@+id/fragment_recipe_step_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/recipe_detail_guideline" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,5 +1,6 @@
 package me.susieson.bakingapp.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -112,7 +113,16 @@ public class RecipeDetailFragment extends Fragment implements OnItemClickListene
 
     @Override
     public void onItemClick(int position) {
-        Timber.i("Item %d clicked!", position);
+        Timber.i("Item %d clicked, opening step", position);
+        Activity activity = getActivity();
+        if (activity != null) {
+            try {
+                OnItemClickListener onItemClickListener = (OnItemClickListener) activity;
+                onItemClickListener.onItemClick(position);
+            } catch (ClassCastException e) {
+                Timber.e(e, "%s must implement OnItemClickListener", activity.toString());
+            }
+        }
     }
 
     private void setupIngredientRecyclerView() {
