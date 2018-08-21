@@ -1,5 +1,8 @@
 package me.susieson.bakingapp.models;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,6 +10,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import me.susieson.bakingapp.converters.IngredientsTypeConverter;
+import me.susieson.bakingapp.converters.StepsTypeConverter;
+
+@Entity
 public class Recipe implements Parcelable {
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
@@ -21,18 +28,24 @@ public class Recipe implements Parcelable {
         }
     };
 
-    @SerializedName("id")
+    @PrimaryKey(autoGenerate = true)
     private int id;
     @SerializedName("name")
     private String name;
+    @TypeConverters(IngredientsTypeConverter.class)
     @SerializedName("ingredients")
     private List<Ingredient> ingredients;
+    @TypeConverters(StepsTypeConverter.class)
     @SerializedName("steps")
     private List<Step> steps;
     @SerializedName("servings")
     private int servings;
     @SerializedName("image")
     private String image;
+
+    public Recipe() {
+
+    }
 
     private Recipe(Parcel in) {
         id = in.readInt();

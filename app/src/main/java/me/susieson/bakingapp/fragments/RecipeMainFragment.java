@@ -1,5 +1,6 @@
 package me.susieson.bakingapp.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,15 +23,20 @@ import com.evernote.android.state.bundlers.BundlerListParcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.susieson.bakingapp.R;
 import me.susieson.bakingapp.adapters.RecipeMainAdapter;
+import me.susieson.bakingapp.database.AppDatabase;
+import me.susieson.bakingapp.database.RecipeDao;
 import me.susieson.bakingapp.interfaces.OnItemClickListener;
 import me.susieson.bakingapp.models.Recipe;
 import me.susieson.bakingapp.services.RecipeService;
+import me.susieson.bakingapp.utils.AppExecutors;
+import me.susieson.bakingapp.utils.NetworkUtils;
 import me.susieson.bakingapp_navigation.HensonNavigator;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,8 +61,11 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
     @State(BundlerListParcelable.class)
     List<Recipe> mRecipeList = new ArrayList<>();
 
+    private boolean forceRefresh = false;
     private RecipeMainAdapter mRecipeAdapter;
     private Context mContext;
+    private RecipeDao mRecipeDao;
+    private Executor mDiskIO;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,6 +74,8 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
         mContext = getContext();
         StateSaver.restoreInstanceState(this, savedInstanceState);
         setHasOptionsMenu(true);
+        mRecipeDao = AppDatabase.getInstance(mContext).getRecipeDao();
+        mDiskIO = AppExecutors.getInstance().diskIO();
     }
 
     @Nullable
@@ -106,7 +117,9 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
 
     @Override
     public void onRefresh() {
+        Timber.d("Executing onRefresh");
         getRecipeList();
+        forceRefresh = true;
     }
 
     @Override
@@ -122,8 +135,20 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
     }
 
     private void getRecipeList() {
-        Timber.d("Retrieving recipe list from the internet");
+        Timber.d("Retrieving recipe list");
         mSwipeRefreshLayout.setRefreshing(true);
+        if (NetworkUtils.isNetworkAvailable(mContext)) {
+            getRecipeListFromInternet();
+        } else if (!forceRefresh) {
+            getRecipeListFromDatabase();
+        } else {
+            showLoadingFailed();
+            forceRefresh = false;
+        }
+    }
+
+    private void getRecipeListFromInternet() {
+        Timber.d("Retrieving recipes from internet");
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -133,21 +158,62 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
         recipeListCall.enqueue(new Callback<List<Recipe>>() {
             @Override
             public void onResponse(@NonNull Call<List<Recipe>> call, @NonNull Response<List<Recipe>> response) {
-                Timber.d("Recipes retrieval successful");
+                Timber.d("Recipes retrieval from internet successful");
                 mRecipeList = response.body();
                 mRecipeAdapter.updateData(mRecipeList);
                 mSwipeRefreshLayout.setRefreshing(false);
+                mDiskIO.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRecipeDao.insertRecipes(mRecipeList);
+                    }
+                });
             }
 
             @Override
             public void onFailure(@NonNull Call<List<Recipe>> call, @NonNull Throwable t) {
-                Timber.d(t, "Recipes retrieval failed");
-                Toast.makeText(mContext,
-                        R.string.recipe_main_loading_error,
-                        Toast.LENGTH_LONG).show();
-                mSwipeRefreshLayout.setRefreshing(false);
+                Timber.d("Recipes retrieval from internet failed");
+                if (!forceRefresh) {
+                    getRecipeListFromDatabase();
+                } else {
+                    showLoadingFailed();
+                }
             }
         });
+    }
+
+    private void getRecipeListFromDatabase() {
+        Timber.d("Retrieving recipes from database");
+        mDiskIO.execute(new Runnable() {
+            @Override
+            public void run() {
+                mRecipeList = mRecipeDao.getAllRecipes();
+
+                Activity activity = getActivity();
+                if (activity != null) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mRecipeList == null || mRecipeList.isEmpty()) {
+                                showLoadingFailed();
+                            } else {
+                                Timber.d("Recipes retrieval from database successful");
+                                mRecipeAdapter.updateData(mRecipeList);
+                            }
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void showLoadingFailed() {
+        Timber.d("Recipes retrieval failed");
+        Toast.makeText(mContext,
+                R.string.recipe_main_loading_error,
+                Toast.LENGTH_LONG).show();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void setupRecyclerView() {
