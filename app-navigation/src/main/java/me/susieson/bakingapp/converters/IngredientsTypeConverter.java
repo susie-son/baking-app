@@ -13,7 +13,7 @@ import me.susieson.bakingapp.models.Ingredient;
 
 public class IngredientsTypeConverter {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     @TypeConverter
     public static List<Ingredient> stringToIngredientList(String ingredientString) {

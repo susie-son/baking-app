@@ -13,7 +13,7 @@ import me.susieson.bakingapp.models.Step;
 
 public class StepsTypeConverter {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     @TypeConverter
     public static List<Step> stringToStepList(String stepString) {

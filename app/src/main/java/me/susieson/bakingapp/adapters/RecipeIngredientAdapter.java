@@ -14,9 +14,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.susieson.bakingapp.R;
-import me.susieson.bakingapp.constants.Measurement;
 import me.susieson.bakingapp.models.Ingredient;
-import timber.log.Timber;
+import me.susieson.bakingapp.utils.StringUtils;
 
 public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredientAdapter.ViewHolder> {
 
@@ -66,47 +65,12 @@ public class RecipeIngredientAdapter extends RecyclerView.Adapter<RecipeIngredie
             double quantity = ingredient.getQuantity();
             String measure = ingredient.getMeasure();
 
-            String ingredientDescription = format(name, quantity, measure);
+            String ingredientDescription = StringUtils.formatIngredientInfo(name, quantity, measure);
 
             if (name != null && !TextUtils.isEmpty(name)) {
                 mIngredientTextView.setText(ingredientDescription);
             }
         }
 
-        private String format(String name, double quantity, String measure) {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            stringBuilder.append(quantity);
-            stringBuilder.append(" ");
-
-            String measurement;
-            boolean isUnit = false;
-            boolean measurementExists = true;
-
-            try {
-                Measurement measurementType = Measurement.valueOf(measure);
-                measurement = measurementType.getDescription();
-                if (measurementType.isUnit()) {
-                    isUnit = true;
-                }
-            } catch (IllegalArgumentException e) {
-                Timber.e(e, "No such measurement type %s in Measurement enum", measure);
-                measurement = measure.toLowerCase();
-                measurementExists = false;
-            }
-            stringBuilder.append(measurement);
-
-            if (quantity > 1.0 && !isUnit && measurementExists) {
-                stringBuilder.append("s");
-            }
-
-            if (!isUnit) {
-                stringBuilder.append(" of ");
-            }
-
-            stringBuilder.append(name);
-
-            return stringBuilder.toString();
-        }
     }
 }
