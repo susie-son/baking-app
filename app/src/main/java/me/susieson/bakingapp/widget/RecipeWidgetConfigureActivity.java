@@ -24,7 +24,7 @@ import me.susieson.bakingapp.database.RecipeDao;
 import me.susieson.bakingapp.interfaces.OnItemClickListener;
 import me.susieson.bakingapp.models.Recipe;
 import me.susieson.bakingapp.utils.AppExecutors;
-import me.susieson.bakingapp.utils.PreferencesUtil;
+import me.susieson.bakingapp.utils.PreferencesUtils;
 import timber.log.Timber;
 
 /**
@@ -89,7 +89,7 @@ public class RecipeWidgetConfigureActivity extends AppCompatActivity implements 
         Timber.d("Item %d clicked, saving recipe pref", position);
         final Context context = RecipeWidgetConfigureActivity.this;
 
-        PreferencesUtil.setRecipeId(context, position);
+        PreferencesUtils.setRecipeId(context, position, mAppWidgetId);
 
         // It is the responsibility of the configuration activity to update the app widget
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);

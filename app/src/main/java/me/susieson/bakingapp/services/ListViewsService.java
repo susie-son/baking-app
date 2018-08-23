@@ -7,19 +7,20 @@ import android.widget.RemoteViewsService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import me.susieson.bakingapp.R;
 import me.susieson.bakingapp.database.AppDatabase;
 import me.susieson.bakingapp.models.Ingredient;
 import me.susieson.bakingapp.models.Recipe;
-import me.susieson.bakingapp.utils.PreferencesUtil;
+import me.susieson.bakingapp.utils.PreferencesUtils;
 import me.susieson.bakingapp.utils.StringUtils;
 
 public class ListViewsService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        return new ListViewsFactory(getApplicationContext());
+        return new ListViewsFactory(getApplicationContext(), intent);
     }
 
 }
@@ -29,10 +30,12 @@ class ListViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private final Context mContext;
     private final AppDatabase mAppDatabase;
     private List<Ingredient> mIngredientList = new ArrayList<>();
+    private int mAppWidgetId;
 
-    ListViewsFactory(Context applicationContext) {
+    ListViewsFactory(Context applicationContext, Intent intent) {
         mContext = applicationContext;
         mAppDatabase = AppDatabase.getInstance(mContext);
+        mAppWidgetId = Integer.valueOf(Objects.requireNonNull(intent.getData()).getSchemeSpecificPart());
     }
 
     @Override
@@ -42,7 +45,7 @@ class ListViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     @Override
     public void onDataSetChanged() {
-        int recipeId = PreferencesUtil.getRecipeId(mContext);
+        int recipeId = PreferencesUtils.getRecipeId(mContext, mAppWidgetId);
         if (recipeId != -1) {
             Recipe selectedRecipe = mAppDatabase.getRecipeDao().getAllRecipes().get(recipeId);
 
