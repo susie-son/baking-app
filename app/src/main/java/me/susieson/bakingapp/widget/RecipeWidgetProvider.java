@@ -1,5 +1,6 @@
 package me.susieson.bakingapp.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -7,7 +8,12 @@ import android.content.Intent;
 import android.widget.RemoteViews;
 
 import me.susieson.bakingapp.R;
+import me.susieson.bakingapp.database.AppDatabase;
+import me.susieson.bakingapp.models.Recipe;
 import me.susieson.bakingapp.services.ListViewsService;
+import me.susieson.bakingapp.utils.AppExecutors;
+import me.susieson.bakingapp.utils.PreferencesUtil;
+import me.susieson.bakingapp_navigation.HensonNavigator;
 
 /**
  * Implementation of App Widget functionality.
@@ -20,11 +26,29 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
         // Construct the RemoteViews object
         final RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget);
 
-        Intent intent = new Intent(context, ListViewsService.class);
+        final Intent intent = new Intent(context, ListViewsService.class);
         views.setRemoteAdapter(R.id.recipe_widget_list_view, intent);
 
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                int recipeId = PreferencesUtil.getRecipeId(context);
+                if (recipeId != -1) {
+                    Recipe selectedRecipe = AppDatabase.getInstance(context).getRecipeDao().getAllRecipes().get(recipeId);
+
+                    Intent appIntent = HensonNavigator.gotoDetailActivity(context)
+                            .selectedRecipe(selectedRecipe).build();
+
+                    PendingIntent appPendingIntent = PendingIntent.getActivity(context, 0, appIntent, 0);
+
+                    views.setOnClickPendingIntent(R.id.recipe_widget_label, appPendingIntent);
+
+                    // Instruct the widget manager to update the widget
+                    appWidgetManager.updateAppWidget(appWidgetId, views);
+                    appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.recipe_widget_list_view);
+                }
+            }
+        });
     }
 
     @Override
