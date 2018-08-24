@@ -2,4 +2,5 @@
 <resources>
     <dimen name="recipe_step_player_height">400dp</dimen>
     <dimen name="item_recipe_step_description_text_size">16sp</dimen>
+    <dimen name="activity_detail_fragment_split">300dp</dimen>
 </resources>
