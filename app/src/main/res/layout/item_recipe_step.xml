@@ -4,48 +4,63 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/white"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?android:selectableItemBackground">
+    android:foreground="@drawable/selectable_item_background">
 
     <ImageView
         android:id="@+id/item_recipe_step_image_view"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:background="@color/colorPrimaryLight"
         android:contentDescription="@string/item_recipe_step_image_view_content_description"
-        android:paddingBottom="8dp"
-        android:paddingEnd="8dp"
-        android:paddingStart="8dp"
-        android:paddingTop="8dp"
+        android:padding="4dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/item_recipe_step_number_image_view"
+        android:id="@+id/item_recipe_step_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#000"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/item_recipe_step_image_view"
-        app:layout_constraintEnd_toEndOf="@+id/item_recipe_step_image_view"
-        app:layout_constraintStart_toStartOf="@+id/item_recipe_step_image_view"
-        app:layout_constraintTop_toTopOf="@+id/item_recipe_step_image_view" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/step"
+        android:textColor="@color/colorSecondaryText"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/item_recipe_step_short_description_text_view"
+        app:layout_constraintStart_toEndOf="@id/item_recipe_step_image_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
+
+    <TextView
+        android:id="@+id/item_recipe_step_number_text_view"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/colorSecondaryText"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/item_recipe_step_short_description_text_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/item_recipe_step_label"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.8" />
 
     <TextView
         android:id="@+id/item_recipe_step_short_description_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textColor="#000"
-        android:textSize="24sp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="@dimen/item_recipe_step_description_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/item_recipe_step_image_view"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6" />
 
 </android.support.constraint.ConstraintLayout>

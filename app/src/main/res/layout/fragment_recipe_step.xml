@@ -2,9 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/recipe_step_scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:paddingBottom="8dp">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +12,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/recipe_step_player_height"
-            android:background="#000">
+            android:background="@android:color/black">
 
             <com.google.android.exoplayer2.ui.PlayerView
                 android:id="@+id/recipe_step_player_view"
@@ -26,9 +24,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/recipe_step_player_view_placeholder_image_view_content_description"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_chef"
                 android:visibility="gone" />
 
@@ -38,11 +38,12 @@
             android:id="@+id/recipe_step_description_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="24dp"
-            android:textColor="#000"
-            android:textSize="24sp" />
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

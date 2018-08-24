@@ -146,6 +146,7 @@ public class RecipeDetailFragment extends Fragment implements OnItemClickListene
         mStepsRecyclerView.setNestedScrollingEnabled(false);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(mContext.getResources().getDrawable(R.drawable.divider));
         mStepsRecyclerView.addItemDecoration(dividerItemDecoration);
         mStepsRecyclerView.setFocusable(false);
     }

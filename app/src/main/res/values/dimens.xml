@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="recipe_step_player_height">250dp</dimen>
+    <dimen name="item_recipe_step_description_text_size">20sp</dimen>
 
     <!--
 Refer to App Widget Documentation for margin information

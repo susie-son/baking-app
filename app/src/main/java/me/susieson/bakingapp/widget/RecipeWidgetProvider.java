@@ -38,6 +38,8 @@ public class RecipeWidgetProvider extends AppWidgetProvider {
                 if (recipeId != -1) {
                     Recipe selectedRecipe = AppDatabase.getInstance(context).getRecipeDao().getAllRecipes().get(recipeId);
 
+                    views.setTextViewText(R.id.recipe_widget_label, selectedRecipe.getName());
+
                     Intent appIntent = HensonNavigator.gotoDetailActivity(context)
                             .selectedRecipe(selectedRecipe).build();
 

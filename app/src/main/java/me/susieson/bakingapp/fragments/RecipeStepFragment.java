@@ -110,6 +110,15 @@ public class RecipeStepFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        Timber.d("Executing onStop");
+        super.onStop();
+        if (mExoPlayer != null) {
+            mExoPlayer.setPlayWhenReady(false);
+        }
+    }
+
+    @Override
     public void onDestroy() {
         Timber.d("Executing onDestroy");
         super.onDestroy();

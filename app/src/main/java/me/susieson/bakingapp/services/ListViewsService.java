@@ -30,7 +30,7 @@ class ListViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private final Context mContext;
     private final AppDatabase mAppDatabase;
     private List<Ingredient> mIngredientList = new ArrayList<>();
-    private int mAppWidgetId;
+    private final int mAppWidgetId;
 
     ListViewsFactory(Context applicationContext, Intent intent) {
         mContext = applicationContext;

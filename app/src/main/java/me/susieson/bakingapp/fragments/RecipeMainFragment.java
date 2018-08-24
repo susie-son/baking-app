@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import com.evernote.android.state.State;
@@ -28,6 +29,7 @@ import java.util.concurrent.Executor;
 import butterknife.BindInt;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
 import me.susieson.bakingapp.R;
 import me.susieson.bakingapp.adapters.RecipeMainAdapter;
 import me.susieson.bakingapp.database.AppDatabase;
@@ -223,6 +225,12 @@ public class RecipeMainFragment extends Fragment implements OnItemClickListener,
 
         mRecipeAdapter = new RecipeMainAdapter(mRecipeList, this);
         mRecyclerView.setAdapter(mRecipeAdapter);
+        mRecyclerView.setNestedScrollingEnabled(false);
+
+        SlideInRightAnimator animator = new SlideInRightAnimator(new OvershootInterpolator(1f));
+        animator.setAddDuration(750);
+
+        mRecyclerView.setItemAnimator(animator);
     }
 
     private void setupRefreshLayout() {

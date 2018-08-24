@@ -51,8 +51,9 @@ public class RecipeMainAdapter extends RecyclerView.Adapter<RecipeMainAdapter.Vi
     }
 
     public void updateData(List<Recipe> recipeList) {
+        notifyItemRangeRemoved(0, mRecipeList.size());
         mRecipeList = recipeList;
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0, mRecipeList.size());
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -79,9 +80,9 @@ public class RecipeMainAdapter extends RecyclerView.Adapter<RecipeMainAdapter.Vi
             String servings = String.valueOf(recipe.getServings());
 
             if (imageUrl != null && !TextUtils.isEmpty(imageUrl)) {
-                Picasso.with(mContext).load(imageUrl).error(R.drawable.ic_cutlery).into(mRecipeImageView);
+                Picasso.with(mContext).load(imageUrl).error(R.drawable.ic_cupcake).into(mRecipeImageView);
             } else {
-                mRecipeImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_cutlery));
+                mRecipeImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.ic_cupcake));
             }
 
             if (name != null && !TextUtils.isEmpty(name)) {

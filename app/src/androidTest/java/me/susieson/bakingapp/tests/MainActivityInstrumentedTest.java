@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 public class MainActivityInstrumentedTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mMainActivityTestRule =
+    public final ActivityTestRule<MainActivity> mMainActivityTestRule =
             new ActivityTestRule<>(MainActivity.class);
 
     @Test
@@ -43,9 +43,6 @@ public class MainActivityInstrumentedTest {
 
         onView(withId(R.id.recipe_main_recycler_view))
                 .check(matches(atPosition(0, hasDescendant(withId(R.id.item_recipe_image_view)))));
-
-        onView(withId(R.id.recipe_main_recycler_view))
-                .check(matches(atPosition(0, hasDescendant(withId(R.id.item_recipe_serving_image_view)))));
 
         onView(withId(R.id.recipe_main_recycler_view))
                 .check(matches(atPosition(0, hasDescendant(withText("8")))));

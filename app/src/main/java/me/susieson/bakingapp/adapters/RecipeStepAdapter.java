@@ -56,7 +56,7 @@ public class RecipeStepAdapter extends RecyclerView.Adapter<RecipeStepAdapter.Vi
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_recipe_step_number_image_view)
+        @BindView(R.id.item_recipe_step_number_text_view)
         TextView mStepNumberTextView;
 
         @BindView(R.id.item_recipe_step_image_view)
